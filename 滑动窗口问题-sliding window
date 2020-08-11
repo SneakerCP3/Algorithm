@@ -1,0 +1,24 @@
+# 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度, 力扣第三题
+
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        len_window = max_len_str = 0     # 初始化窗口长度和最长子串的长度
+        wi = []                          # 初始化存放窗口的列表
+        for i in s:
+            if i not in lookuplist:      # 如果该元素不在窗口列表中，加入窗口
+                lookuplist.append(i)
+                len_window += 1          # 此时窗口长度+1
+            # 如果该元素在窗口列表中，则需要获取该元素所在位置，移除该位置及之前的字符，维持不含重复数字的窗口
+            else:
+                index = lookuplist.index(i)        # 获取该元素所在位置
+                lookuplist = lookuplist[index+1:]  # 移除该位置及之前的字符，切片
+                lookuplist.append(i)               # 将该元素重新加入窗口
+                len_window = len(lookuplist)       # 当前长度更新为窗口长度
+
+            max_len_str = max(max_len_str,len_window)  # 刷新最长子串的长度
+        return max_len_str
+
+if __name__ == '__main__':
+    solution = Solution()
+    s = 'pwwzkewd'
+    print(solution.lengthOfLongestSubstring(s))
