@@ -1,9 +1,24 @@
-# 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度, 力扣第三题
+# -*- coding: utf-8 -*-
+
+# 3. 无重复字符的最长子串
+# 30. 串联所有单词的子串
+# 76. 最小覆盖子串
+# 159. 至多包含两个不同字符的最长子串
+# 209. 长度最小的子数组
+# 239. 滑动窗口最大值
+# 567. 字符串的排列
+# 632. 最小区间
+# 727. 最小窗口子序列
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
+        '''
+        # 给定一个字符串，请你找出其中不含有重复字符的最长子串的长度, 力扣 No.3
+        :param s:
+        :return:
+        '''
         len_window = max_len_str = 0     # 初始化窗口长度和最长子串的长度
-        wi = []                          # 初始化存放窗口的列表
+        lookuplist = []                          # 初始化存放窗口的列表
         for i in s:
             if i not in lookuplist:      # 如果该元素不在窗口列表中，加入窗口
                 lookuplist.append(i)
@@ -17,33 +32,68 @@ class Solution:
 
             max_len_str = max(max_len_str,len_window)  # 刷新最长子串的长度
         return max_len_str
-        
-        
-    def lenthOfLongestSum(self,s:list ,sum:int) -> int:
+
+
+    def minSubArrayLen(self,s,nums):
         '''
-        # 给定数组A = [1,1,3,2,1,0,2]，找出满足和小于等于5的最长连续子数组（待完善）
+        给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。
+        如果不存在符合条件的子数组，返回 0。  力扣 No.209
         :param s:
-        :param sum:
+        :param nums:
         :return:
         '''
-        len_window = max_len_list = 0
-        sum = 0
-        window = []
-        for i in s:
-            sum = sum + i
-            if sum <= 5:
-                window.append(i)
-                len_window += 1
-            else:
-                window = window[1:]
-                window.append(i)
-                len_window = len(window)
+        left = right = 0
+        temp = 0
 
-            max_len_str = max(max_len_str, len_window)  # 刷新最长子串的长度
+        n = len(nums)
+        min_lenth = n + 1       # 如果不存在，则最小长度应该为n的长度
+        while right < n:
+            temp += nums[right]
+            right += 1
+            while temp >= s:
+                min_lenth = min(min_lenth, right - left)
+                temp -= nums[left]
+                left += 1
 
-        return max_len_str
+        return min_lenth if min_lenth != n+1 else 0
+
+    def min_cover_str(self,s,t):
+        '''
+        给你一个字符串 S、一个字符串 T 。请你设计一种算法，可以在 O(n) 的时间复杂度内，
+        从字符串 S 里面找出：包含 T 所有字符的最小子串。  力扣 No.76
+        输入：S = "ADOBECODEBANC", T = "ABC"
+        输出："BANC"
+        :param s:
+        :param t:
+        :return:
+        '''
+        from collections import defaultdict
+        findout = defaultdict(int)
+        for i in t:
+            findout[i] += 1
+        min_len, res = float('inf'), ""
+        l, counter = len(s), len(t)
+        left = right = 0
+        # ------------------------------核心代码
+        while right < l:
+            if findout[s[right]] > 0:
+                counter -= 1
+            findout[s[right]] -= 1
+            right += 1
+            while counter == 0:
+                if min_len > right - left:
+                    min_len = right - left
+                    res = s[left:right]
+                if findout[s[left]] == 0:
+                    counter += 1
+                findout[s[left]] += 1
+                left += 1
+        # -------------------------------------核心代码
+        return res
+
 
 if __name__ == '__main__':
     solution = Solution()
-    s = 'pwwzkewd'
-    print(solution.lengthOfLongestSubstring(s))
+    nums = [1, 1, 3, 2, 1, 0, 2]
+    sum = 5
+    print(solution.lenthOfLongestSum(nums,sum))
