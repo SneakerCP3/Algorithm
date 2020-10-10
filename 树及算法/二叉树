@@ -1,0 +1,131 @@
+# -*- coding: utf-8 -*-
+
+class TreeNode():
+    '''定义树的节点类'''
+    def __init__(self,data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+class BinTree():
+    '''创建二叉树类'''
+    def __init__(self):
+        '''定义初始化函数'''
+        self.root = None          # 初始化根节点为None
+        self.ls = []              # 定义列表用于存储节点地址
+
+    def addNode(self,data):
+        '''
+        定义addNode方法，向树结构中添加元素
+        :param data:
+        :return:
+        '''
+        node = TreeNode(data)     # 实例化树节点
+        if self.root == None:     # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+            self.root = node
+            self.ls.append(self.root)
+        else:
+            rootNode = self.ls[0]              # 将第一个元素设为根节点
+            if rootNode.left == None:          # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+                rootNode.left = node
+                self.ls.append(rootNode.left)
+            elif rootNode.right == None:        # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+                rootNode.right = node
+                self.ls.append(rootNode.right)
+                self.ls.pop(0)                  # 弹出self.ls第一个位置处的元素
+
+    def preOderTraversal(self,root):
+        '''
+        递归方式前序遍历二叉树：根-->左-->右
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        print(root.data,end=',')
+        self.preOderTraversal(root.left)
+        self.preOderTraversal(root.right)
+
+    def inOrderTraversal(self,root):
+        '''
+        递归方式中序遍历二叉树：左-->根-->右
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        self.inOrderTraversal(root.left)
+        print(root.data,end=',')
+        self.inOrderTraversal(root.right)
+
+    def postOrderTraversal(self,root):
+        '''
+        递归方式后序遍历二叉树：左-->右-->根
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        self.postOrderTraversal(root.left)
+        self.postOrderTraversal(root.right)
+        print(root.data,end=',')
+
+    def levelOrderTraversal(self,root):
+        '''
+        层序遍历（广度优先遍历），通过队列实现：在树的各层级从左到右访问各项
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        queue,result = [],[]        # 创建队列
+        node = root
+        queue.append(node)          # 根节点入队
+        while queue:                # 若队列不为空
+            node = queue.pop(0)     # 当前节点出队
+            result.append(node.data)    # 访问当前节点的数据项，并将其添加到result中
+            if node.left != None:       # 若当前节点的左子节点 ！= None，左子节点入队
+                queue.append(node.left)
+            if node.right != None:      # 若当前节点的右子节点 ！= None，右子节点入队
+                queue.append(node.right)
+        print(result)                   # 打印遍历结果
+
+    # 遍历二叉树的几个应用
+
+    # 1、输出二叉树的叶子节点: 在前序遍历的程序上稍作修改可完成
+    def printLeafNodes(self,root):
+        '''
+        打印二叉树的叶子节点
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        if root.left == None and root.right == None:  # 只有当当前节点为叶子节点时打印当前节点的数据项
+            print(root.data)
+        self.printLeafNodes(root.left)
+        self.printLeafNodes(root.right)
+
+    # 2、求二叉树的高度
+    def heightOfBT(self,root):
+        if root == None:
+            return 0
+        HL = self.heightOfBT(root.left)
+        HR = self.heightOfBT(root.right)
+        if HL > HR:
+            return HL + 1
+        else:
+            return HR + 1
+
+
+if __name__ == '__main__':
+    tree = BinTree()
+    for i in range(11):
+        tree.addNode(i)
+    # tree.printLeafNodes(tree.root)
+    # tree.preOderTraversal(tree.root)
+    # print('')
+    # tree.inOrderTraversal(tree.root)
+    # print('')
+    # tree.postOrderTraversal(tree.root)
+    print(tree.heightOfBT(tree.root))
