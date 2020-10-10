@@ -110,12 +110,7 @@ class BinTree():
     def heightOfBT(self,root):
         if root == None:
             return 0
-        HL = self.heightOfBT(root.left)
-        HR = self.heightOfBT(root.right)
-        if HL > HR:
-            return HL + 1
-        else:
-            return HR + 1
+        return max(self.heightOfBT(root.left) + 1,self.heightOfBT(root.right) + 1)
 
 
 if __name__ == '__main__':
