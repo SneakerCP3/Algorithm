@@ -111,6 +111,20 @@ class BinTree():
         if root == None:
             return 0
         return max(self.heightOfBT(root.left) + 1,self.heightOfBT(root.right) + 1)
+    
+    # 递归方法通用解题套路
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        res = []
+        def helper(root):              # 定义根节点要做的事
+            if root is None:
+                return
+            
+            helper(root.left)         
+            res.append(root.val)       # 可以根据前中后遍历调整位置
+            helper(root.right)
+
+        helper(root)
+        return res
 
 
 if __name__ == '__main__':
