@@ -1,0 +1,170 @@
+### 二叉树
+
+#### 二叉树的分类
+
+1、完全二叉树：在一棵二叉树中，除了最后一层，都是满的，并且最后一层或者是满的，或者是右边缺少连续若干节点，成为完全二叉树
+
+2、满二叉树：一棵深度为k，并且有2 k + 1 − 1 2^{k+1}-12k+1−1个节点的二叉树，成为满二叉树
+
+3、二叉搜索树：点满足左子树所有节点<跟节点<右子树所以节点，不存在相等值的节点
+
+4、AVL树：又被称为高度平衡树，是最先发明的自平衡二叉查找树，任何节点的两个儿子子树的高度最大差别为1，增加和删除可能需要通过一次或多次树旋转来重新平衡这个树
+
+#### 二叉树的性质
+
+性质1：在非空二叉树的第i层上最多有2 i − 1 2^{i-1}2i−1个节点
+
+性质2：深度为K的二叉树最多有2 k − 1 2^k-12k−1个节点
+
+性质3：具有n个节点的完全二叉树的深度k = ⌊ l o g 2 n ⌋ + 1 k =\lfloor log_2n\rfloor+1k=⌊log2n⌋+1
+
+性质4：二叉树种编号为i的节点，如果有左右孩子，则左孩子编号为2i，右孩子编号为2i+1
+
+#### 二叉树的实现
+
+先定义节点类：
+
+```python
+class TreeNode():
+    '''定义树的节点类'''
+    def __init__(self,data):
+        self.data = data
+        self.left = None
+        self.right = None
+```
+
+定义二叉树类及方法：
+
+```python
+class BinTree():
+    '''创建二叉树类'''
+    def __init__(self):
+        '''定义初始化函数'''
+        self.root = None          # 初始化根节点为None
+        self.ls = []              # 定义列表用于存储节点地址
+
+    def addNode(self,data):
+        '''
+        定义addNode方法，向树结构中添加元素
+        :param data:
+        :return:
+        '''
+        node = TreeNode(data)  # 实例化树节点
+        if self.root == None:  # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+            self.root = node
+            self.ls.append(self.root)
+        else:
+            rootNode = self.ls[0]              # 将第一个元素设为根节点
+            # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+            if rootNode.left == None:  
+                rootNode.left = node
+                self.ls.append(rootNode.left)
+            # 若根节点的左子树为None，添加左节点，并将其地址值添加到self.ls中
+            elif rootNode.right == None:        
+                rootNode.right = node
+                self.ls.append(rootNode.right)
+                self.ls.pop(0)                  # 弹出self.ls第一个位置处的元素
+
+    def preOderTraversal(self,root):
+        '''
+        递归方式前序遍历二叉树：根-->左-->右
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        print(root.data,end=',')
+        self.preOderTraversal(root.left)
+        self.preOderTraversal(root.right)
+
+    def inOrderTraversal(self,root):
+        '''
+        递归方式中序遍历二叉树：左-->根-->右
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        self.inOrderTraversal(root.left)
+        print(root.data,end=',')
+        self.inOrderTraversal(root.right)
+
+    def postOrderTraversal(self,root):
+        '''
+        递归方式后序遍历二叉树：左-->右-->根
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        self.postOrderTraversal(root.left)
+        self.postOrderTraversal(root.right)
+        print(root.data,end=',')
+
+    def levelOrderTraversal(self,root):
+        '''
+        层序遍历（广度优先遍历），通过队列实现：在树的各层级从左到右访问各项
+        :param root:
+        :return:
+        '''
+        if root == None:
+            return
+        queue,result = [],[]        # 创建队列
+        node = root
+        queue.append(node)          # 根节点入队
+        while queue:                # 若队列不为空
+            node = queue.pop(0)     # 当前节点出队
+            result.append(node.data)    # 访问当前节点的数据项，并将其添加到result中
+            if node.left != None:       # 若当前节点的左子节点 ！= None，左子节点入队
+                queue.append(node.left)
+            if node.right != None:      # 若当前节点的右子节点 ！= None，右子节点入队
+                queue.append(node.right)
+        print(result)                   # 打印遍历结果
+```
+
+#### 遍历二叉树的应用
+
+1、输出二叉树的叶子节点: 在前序遍历的程序上稍作修改可完成
+
+```python
+ def printLeafNodes(self,root):
+     '''
+     打印二叉树的叶子节点
+     :param root:
+     :return:
+     '''
+     if root == None:
+        return
+     # 只有当当前节点为叶子节点时打印当前节点的数据项
+     if root.left == None and root.right == None:  
+         print(root.data)
+     self.printLeafNodes(root.left)
+     self.printLeafNodes(root.right)
+```
+
+2、求二叉树的高度
+
+```python
+def heightOfBT(self,root):
+    if root == None:
+        return 0
+    return max(self.heightOfBT(root.left) + 1,self.heightOfBT(root.right) + 1)
+```
+
+#### 递归方法通用解题套路
+
+```python
+def inorderTraversal(self, root: TreeNode) -> List[int]:
+    res = []
+    def helper(root):              # 定义一个帮助函数：确定根节点要做的事
+        if root is None:           # 判断是否为空
+            return
+           
+        helper(root.left)         
+        res.append(root.val)       # 可以根据前中后遍历调整位置
+        helper(root.right)
+
+    helper(root)                   # 执行帮助函数
+    return res					   # 返回结果
+```
+
